@@ -9,6 +9,11 @@ view: ext_demo_20180320_pm {
 
   dimension: agentname {
     type: string
+    link:
+    { label: "Agent_Drilldown"
+    url: "https://corelogicpbl.looker.com/dashboards/32?Agent%20Name={{agentname}}"
+    icon_url: "http://www.looker.com/favicon.ico"
+    }
     sql: ${TABLE}.agentname ;;
   }
 
@@ -37,8 +42,13 @@ view: ext_demo_20180320_pm {
     sql: ${TABLE}.bath_grade2 ;;
   }
 
+#   dimension: city {
+#     type: string
+#     sql: ${TABLE}.city ;;
+#   }
+
   dimension: city {
-    type: string
+   type: string
     sql: ${TABLE}.city ;;
   }
 
@@ -198,10 +208,11 @@ view: ext_demo_20180320_pm {
   dimension: rctpropertystate {
     type: string
     sql: ${TABLE}.rctpropertystate ;;
+    drill_fields:[rctpropertycounty]
   }
 
   dimension: rctpropertyzip {
-    type: number
+    type: zipcode
     sql: ${TABLE}.rctpropertyzip ;;
   }
 
@@ -283,4 +294,85 @@ view: ext_demo_20180320_pm {
     type: count
     drill_fields: [agentname, yearbuiltrangename, livingarearangename]
   }
+
+  measure: Sum_replacement_cost {
+    type: sum
+    sql: ${replacement_cost};;
+  }
+
+  measure: Sum_totallivingarea {
+    type: sum
+    sql: ${totallivingarea} ;;
+
+  }
+
+  measure: Avg_RCperSqft {
+    type: number
+    sql: ${Sum_replacement_cost}/${Sum_totallivingarea};;
+    value_format:"$#.00;($#.00)"
+
+  }
+
+  measure: cnt_KitchenDowngrade {
+    type: sum
+    sql:
+    CASE
+      WHEN ${assm_kitchengrade1} like '%Builder%' and ${kitchen_grade1} like '%Basic%' THEN 1
+      WHEN ${assm_kitchengrade1} like '%Semi%' and ( ${kitchen_grade1} like '%Basic%' OR ${kitchen_grade1} like '%Builder%') THEN 1
+      WHEN ${assm_kitchengrade1} like '%Custom%' and ( ${kitchen_grade1} like '%Basic%' OR ${kitchen_grade1} like '%Builder%' OR ${kitchen_grade1} like '%Semi%') THEN 1
+      WHEN ${assm_kitchengrade1} like '%Designer%' and ( ${kitchen_grade1} like '%Basic%' OR ${kitchen_grade1} like '%Builder%' OR ${kitchen_grade1} like '%Semi%' OR ${kitchen_grade1} like '%Custom%') THEN 1
+      ELSE 0
+    END
+    ;;
+
+  }
+
+#   dimension: state {
+#     type: string
+#     sql: substring(${TABLE}.statecounty,1,2) ;;
+#     drill_fields:[city]
+#   }
+
+  dimension: state {
+    type: string
+    map_layer_name: us_zipcode_tabulation_areas
+    sql: substring(${TABLE}.statecounty,1,2) ;;
+    drill_fields:[city, rctpropertyzip, statecounty]
+  }
+
+
+  measure: Sum_CoverageA {
+    type: sum
+    sql: ${pif_coverage_a_dwelling_amount} ;;
+
+  }
+##Added by bhanu
+  filter: agent_selector {
+    type: string
+    suggest_explore: ext_demo_20180320_pm
+    suggest_dimension: agentname
+
+  }
+
+  dimension: selected_agent{
+    type: yesno
+    sql:  {% condition agent_selector %} ${agentname} {% endcondition %}
+      ;;
+  }
+
+
+  measure: selected_agent_count {
+    type:count
+    filters: {
+      field: selected_agent
+      value: "Yes"
+    }
+  }
+
+  measure: percent_of_total_count {
+    type: number
+    sql:1.0* ${selected_agent_count} /NULLIF( ${count}, 0) ;;
+    value_format_name: percent_2
+  }
+
 }
