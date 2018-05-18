@@ -18,8 +18,8 @@ include: "*.dashboard.lookml"  # include all dashboards in this project
 #   }
 # }
 explore: ext_demo_20180320_pm {
-#   access_filter: {
-#     field: ext_demo_20180320_pm.agentname
-#     user_attribute: ankit_test
-#   }
+#    access_filter: {
+#      field: ext_demo_20180320_pm.agentname
+#      user_attribute: ankit_test
+#    }
 }

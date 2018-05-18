@@ -11,7 +11,8 @@ view: ext_demo_20180320_pm {
     type: string
     link:
     { label: "Agent_Drilldown"
-    url: "https://corelogicpbl.looker.com/dashboards/32?Agent%20Name={{agentname}}"
+#     url: "https://corelogicpbl.looker.com/dashboards/32?Agent%20Name={{agentname}}"
+      url: "/dashboards/32?Agent%20Name={{agentname}}"
     icon_url: "http://www.looker.com/favicon.ico"
     }
     sql: ${TABLE}.agentname ;;
@@ -321,7 +322,7 @@ view: ext_demo_20180320_pm {
       WHEN ${assm_kitchengrade1} like '%Semi%' and ( ${kitchen_grade1} like '%Basic%' OR ${kitchen_grade1} like '%Builder%') THEN 1
       WHEN ${assm_kitchengrade1} like '%Custom%' and ( ${kitchen_grade1} like '%Basic%' OR ${kitchen_grade1} like '%Builder%' OR ${kitchen_grade1} like '%Semi%') THEN 1
       WHEN ${assm_kitchengrade1} like '%Designer%' and ( ${kitchen_grade1} like '%Basic%' OR ${kitchen_grade1} like '%Builder%' OR ${kitchen_grade1} like '%Semi%' OR ${kitchen_grade1} like '%Custom%') THEN 1
-      ELSE 0
+      ELSE NULL
     END
     ;;
 
