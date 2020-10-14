@@ -1,7 +1,8 @@
 connection: "aws_de_gpdb"
 
-include: "*.view.lkml"         # include all views in this project
-# include: "*.dashboard.lookml"  # include all dashboards in this project
+include: "/Digital_Marketing/*.view.lkml"                # include all views in the views/ folder in this project
+# include: "/**/view.lkml"                   # include all views in this project
+# include: "my_dashboard.dashboard.lookml"   # include a LookML dashboard called my_dashboard
 
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.
@@ -17,9 +18,5 @@ include: "*.view.lkml"         # include all views in this project
 #     sql_on: ${users.id} = ${orders.user_id} ;;
 #   }
 # }
-explore: ext_demo_20180320_pm {
-  # access_filter: {
-  #   field: ext_demo_20180320_pm.agentname
-  #   user_attribute: ankit_test
-  # }
-}
+
+explore: looker_demo {}
