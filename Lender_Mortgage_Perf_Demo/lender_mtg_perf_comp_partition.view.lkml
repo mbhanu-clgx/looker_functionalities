@@ -61,6 +61,7 @@ view: lender_mtg_perf_comp_partition {
 
   dimension: situsst {
     type: string
+    map_layer_name: us_states
     sql: ${TABLE}.situsst ;;
   }
 
