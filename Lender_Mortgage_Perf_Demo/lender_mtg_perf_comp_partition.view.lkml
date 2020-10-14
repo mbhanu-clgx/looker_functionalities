@@ -89,7 +89,7 @@ view: lender_mtg_perf_comp_partition {
   measure: total_loan_amount {
     type: sum
     sql: ${loan_amount} ;;
-    value_format: "$0.000,,\" M\""
+    value_format: "$0,,,\" B\""
 
   }
 }
