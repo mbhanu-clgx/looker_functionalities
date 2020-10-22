@@ -76,6 +76,32 @@ view: lender_mtg_perf_comp_partition {
     sql: ${TABLE}.year ;;
   }
 
+  parameter: date_filter {
+    type: unquoted
+    allowed_value: {
+      label: "Year"
+      value: "Year"
+    }
+    allowed_value: {
+      label: "Month"
+      value: "Month"
+    }
+    allowed_value: {
+      label: "Day"
+      value: "Day"
+    }
+  }
+
+  dimension: Date_Dimension {
+    type: string
+    sql: case when '{% parameter date_filter %}' = 'Year' then CAST(EXTRACT(YEAR FROM datepartition) AS STRING)
+              when '{% parameter date_filter %}' = 'Month' then CAST(FORMAT_DATETIME("%B", datepartition) AS STRING)
+              when '{% parameter date_filter %}' = 'Day' then CAST(EXTRACT(DAY FROM datepartition) AS STRING)
+              --${TABLE}.year_number||'/'||${TABLE}.month_number||'/' ||${TABLE}.day_number_in_month
+              end ;;
+
+    }
+
   measure: count {
     type: count
     drill_fields: []
@@ -84,6 +110,7 @@ view: lender_mtg_perf_comp_partition {
   measure: total_loans {
     type: sum
     sql: ${no_of_loans} ;;
+    value_format: "#,##0,,\" M\""
   }
 
   measure: total_loan_amount {
